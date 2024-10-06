@@ -31,7 +31,7 @@ public class PostController {
 	private final CommentService commentService;
 
 	@PostMapping
-	public ResponseEntity<String> createPost(@RequestPart WritePostRequest request,
+	public ResponseEntity<String> createPost(@RequestPart(value = "text") WritePostRequest request,
 		@RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 		postService.writePost(request, imageFile);
 		return ResponseEntity.ok("create");
