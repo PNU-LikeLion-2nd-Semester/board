@@ -1,7 +1,11 @@
 package org.example.be.post;
 
+import java.io.IOException;
+
+import org.example.be.post.dto.GetPostResponse;
 import org.example.be.post.dto.PostCommentsResponse;
 import org.example.be.post.dto.UpdateCommentRequest;
+import org.example.be.post.dto.UpdatePostRequest;
 import org.example.be.post.dto.WritePostRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +31,22 @@ public class PostController {
 	private final CommentService commentService;
 
 	@PostMapping
-	public ResponseEntity<String> createPost(@Valid @RequestBody WritePostRequest request) {
-		postService.writePost(request);
-		return ResponseEntity.status(201).body("Post created successfully.");
+	public ResponseEntity<String> createPost(@RequestPart WritePostRequest request,
+		@RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+		postService.writePost(request, imageFile);
+		return ResponseEntity.ok("create");
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<GetPostResponse> getPost(@PathVariable("id") Long id) {
+		GetPostResponse response = postService.readPost(id);
+		return ResponseEntity.ok().body(response);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<String> updatePost(@PathVariable("id") Long id, @RequestBody UpdatePostRequest request) {
+		postService.updatePost(id, request);
+		return ResponseEntity.ok("update");
 	}
 
 	@DeleteMapping("/{id}")

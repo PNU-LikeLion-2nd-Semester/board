@@ -10,12 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
+@Setter
 public class Post {
 
 	@Id
@@ -27,4 +29,10 @@ public class Post {
 
 	@Column(length = 2048, nullable = false)
 	private String content;
+
+	@Column(length = 128)
+	private String imageName;
+
+	@Column(length = 1024)
+	private String imagePath;
 }
