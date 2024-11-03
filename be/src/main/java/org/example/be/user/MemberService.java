@@ -36,10 +36,8 @@ public class MemberService {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
 			String token = tokenProvider.createToken(userDetails.getUsername(),
 				userDetails.getAuthorities().toString());
-			System.out.println("token = " + token);
 			return ResponseEntity.ok(token);
 		} catch (Exception e) {
-			System.out.println("e = " + e);
 			return ResponseEntity.status(401).body("Invalid username or password");
 		}
 
