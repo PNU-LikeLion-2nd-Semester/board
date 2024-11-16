@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -46,9 +47,9 @@ public class PostService {
 		postRepository.save(post);
 	}
 
+	@Transactional(readOnly = true)
 	public GetPostResponse readPost(Long id) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+		Post post = getPostById(id);
 
 		GetPostResponse.PostDetail postDetail = new GetPostResponse.PostDetail(post.getId(), post.getTitle(),
 			post.getContent(), post.getImagePath());
@@ -57,12 +58,9 @@ public class PostService {
 	}
 
 	public void updatePost(Long id, UpdatePostRequest request, Member member) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+		Post post = getPostById(id);
 
-		if (!post.getOwner().equals(member)) {
-			throw new IllegalArgumentException("해당 게시글을 수정할 권한이 없습니다.");
-		}
+		validateMemberOwnership(member, post);
 
 		post.setTitle(request.title());
 		post.setContent(request.content());
@@ -71,13 +69,21 @@ public class PostService {
 	}
 
 	public void removePost(Long id, Member member) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+		Post post = getPostById(id);
 
-		if (!post.getOwner().equals(member)) {
-			throw new IllegalArgumentException("해당 게시글을 삭제할 권한이 없습니다.");
-		}
+		validateMemberOwnership(member, post);
 
 		postRepository.delete(post);
+	}
+
+	private Post getPostById(Long postId) {
+		return postRepository.findById(postId)
+			.orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+	}
+
+	private void validateMemberOwnership(Member member, Post post) {
+		if (!post.getOwner().equals(member)) {
+			throw new IllegalArgumentException("게시글에 대한 권한이 없습니다.");
+		}
 	}
 }
