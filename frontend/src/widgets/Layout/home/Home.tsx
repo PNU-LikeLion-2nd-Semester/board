@@ -1,10 +1,13 @@
+import Profile from "./Profile";
+import Sidebar from "./Sidebar";
+import { ReactNode } from "react";
+
 export default function Home() {
   return (
-    <>
-      <div>베너</div>
-      <div>카테고리 사이드바</div>
-      <div>검색바</div>
-      <div>탑 포스트</div>
-    </>
+    <div className="flex flex-col justify-between gap-4 box-border md:flex-row">
+      <Profile />
+      <div>인기 게시판</div>
+      <Sidebar />
+    </div>
   );
 }

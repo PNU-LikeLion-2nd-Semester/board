@@ -3,6 +3,8 @@ import logoSrc from "../../../../shared/assets/images/sampleLogo.png";
 import Link from "next/link";
 
 export default function Header() {
+  const goLogin = () => {};
+
   return (
     <>
       <div>
@@ -20,7 +22,9 @@ export default function Header() {
                 type="button"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                Get started
+                <Link href="/login" aria-current="page">
+                  Get started
+                </Link>
               </button>
               <button
                 data-collapse-toggle="navbar-cta"
@@ -39,9 +43,9 @@ export default function Header() {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M1 1h15M1 7h15M1 13h15"
                   />
                 </svg>
