@@ -12,9 +12,7 @@ public record PostCommentsResponse(
 	public static PostCommentsResponse from(List<Comment> comments) {
 		List<PostComment> postComments = new ArrayList<>(comments.size());
 		for (Comment comment : comments) {
-			if (comment != null) {
-				postComments.add(PostComment.from(comment));
-			}
+			postComments.add(PostComment.from(comment));
 		}
 		return new PostCommentsResponse(Collections.unmodifiableList(postComments));
 	}

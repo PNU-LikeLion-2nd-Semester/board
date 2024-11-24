@@ -23,3 +23,6 @@ logging:
       hibernate:
         SQL: debug # Hibernate SQL ?? ??
         orm.jdbc.bind: trace # ???? ??? ?? ??? ??
+jwt:
+  secret: qwerasdfaseqwrewrqsdfadadsfasdfsdfasdvverbetbrbsadcsdacscasd
+  expiration: 3600
