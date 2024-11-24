@@ -3,12 +3,10 @@ import logoSrc from "../../../../shared/assets/images/sampleLogo.png";
 import Link from "next/link";
 
 export default function Header() {
-  const goLogin = () => {};
-
   return (
     <>
       <div>
-        <nav className=" mx-10 bg-white border-gray-200 dark:bg-gray-900">
+        <nav className=" mx-10 bg-white border-gray-200 dark:bg-gray-900 ">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <Image src={logoSrc} alt="logoImg" className="w-8" />
@@ -76,7 +74,7 @@ export default function Header() {
                 </li>
                 <li>
                   <Link
-                    href="/"
+                    href="/newpost"
                     className="block py-2 px-3 md:p-0 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     new post

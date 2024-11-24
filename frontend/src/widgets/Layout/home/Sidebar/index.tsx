@@ -1,7 +1,7 @@
 export default function Sidebar() {
   return (
     <>
-      <div>sidebar</div>
+      <div className="w-1/4">sidebar</div>
     </>
   );
 }

@@ -1,15 +1,15 @@
 import Head from "next/head";
 import AppLayout from "../widgets/Layout/app";
-import HomeLayout from "../widgets/Layout/home";
+import BoardLayout from "@/widgets/Layout/board";
 
-export default function HomePage() {
+export default function Board1() {
   return (
     <>
       <Head>
-        <title>home | penscape</title>
+        <title>Board1 | penscape</title>
       </Head>
       <AppLayout>
-        <HomeLayout />
+        <BoardLayout />
       </AppLayout>
     </>
   );
