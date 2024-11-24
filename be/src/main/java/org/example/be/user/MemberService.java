@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final CustomUserDetailsService userDetailsService;
@@ -26,7 +28,7 @@ public class MemberService {
 		Member member = new Member();
 		member.setRole("USER");
 		member.setUsername(request.username());
-		member.setPassword(passwordEncoder.encode(request.password()));
+		member.setPassword(request.password());
 		memberRepository.save(member);
 
 		return ResponseEntity.ok("User registered successfully");
@@ -36,12 +38,16 @@ public class MemberService {
 		try {
 			Member member = memberRepository.findByUsername(request.username())
 				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-			if (!member.getPassword().equals(passwordEncoder.encode(request.password()))) {
+			log.info("사용자 찾음");
+			if (!member.getPassword().equals(request.password())) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
+			log.info("비밀번호 일치");
 			UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
+			log.info("사용자 조회함");
 			String token = tokenProvider.createToken(userDetails.getUsername(),
 				userDetails.getAuthorities().toString());
+			log.info("토큰 생성");
 			return ResponseEntity.ok(new LoginResponse(token));
 		} catch (Exception e) {
 			return ResponseEntity.status(401).body(new LoginResponse(null));
