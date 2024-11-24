@@ -67,6 +67,6 @@
     @apply bg-background text-foreground;
   }
   main {
-    @apply mx-10 p-4;
+    @apply mx-10 mt-5 p-4;
   }
 }
