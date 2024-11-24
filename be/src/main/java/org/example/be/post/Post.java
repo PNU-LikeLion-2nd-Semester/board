@@ -24,8 +24,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Post extends BaseEntity {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Post {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

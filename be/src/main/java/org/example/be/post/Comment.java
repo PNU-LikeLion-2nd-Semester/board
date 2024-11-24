@@ -28,8 +28,8 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Comment extends BaseEntity {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Comment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
