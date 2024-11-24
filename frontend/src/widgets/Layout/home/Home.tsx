@@ -1,6 +1,5 @@
 import Profile from "./Profile";
 import Sidebar from "./Sidebar";
-import { ReactNode } from "react";
 
 export default function Home() {
   return (

@@ -7,7 +7,7 @@ import type {
   PostListResponse,
 } from "@/entities/post/types";
 
-const API_URL = "https://a4f6-121-145-132-152.ngrok-free.app/api";
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const postApi = {
   uploadPost: async (data: PostRequest): Promise<PostResponse> => {

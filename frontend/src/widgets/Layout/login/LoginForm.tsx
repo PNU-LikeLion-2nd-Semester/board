@@ -13,7 +13,6 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { formSchema } from "@/features/Auth/login/schema";
-import { useAuthStore } from "@/features/Auth/login/store";
 import { useLogin } from "@/shared/hooks/useLogin";
 
 export default function LoginForm() {

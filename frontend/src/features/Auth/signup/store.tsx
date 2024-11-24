@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User, AuthStore } from "@/entities/signup/types";
+import { AuthStore } from "@/entities/signup/types";
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,

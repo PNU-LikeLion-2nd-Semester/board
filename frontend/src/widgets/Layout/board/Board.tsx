@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/shared/ui/accordion";
-import { Label } from "@/shared/ui/label";
 import PostListTable from "@/widgets/Table/PostList/PostListTable";
 
 export default function Board() {

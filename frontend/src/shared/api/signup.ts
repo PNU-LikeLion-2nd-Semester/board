@@ -1,6 +1,6 @@
 import type { SignUpRequest, SignUpResponse } from "@/entities/signup/types";
 
-const API_URL = "https://a4f6-121-145-132-152.ngrok-free.app/api";
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const signUpApi = {
   signup: async (data: SignUpRequest): Promise<SignUpResponse> => {

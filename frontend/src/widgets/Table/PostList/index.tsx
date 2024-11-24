@@ -49,6 +49,7 @@ export default function PostList(data: PostListProps) {
           <Link
             href={`/board1/${post.id}`}
             className="hover:underline text-blue-600"
+            key={post.id}
           >
             <TableRow>
               <TableCell className="font-medium">{post.title}</TableCell>

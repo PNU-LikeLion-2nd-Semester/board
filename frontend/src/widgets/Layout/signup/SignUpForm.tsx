@@ -13,11 +13,12 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { formSchema } from "@/features/Auth/signup/schema";
-import { useAuthStore } from "@/features/Auth/signup/store";
 import { useSignUp } from "@/shared/hooks/useSignUp";
+import { useRouter } from "next/router";
 
 export default function SignUpForm() {
   const { signup, isLoading, error } = useSignUp();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,6 +30,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await signup(values);
+    router.push("/login");
     console.log(values);
   };
 

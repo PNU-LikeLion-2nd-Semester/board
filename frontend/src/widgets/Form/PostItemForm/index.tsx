@@ -20,7 +20,6 @@ export default function PostItem() {
     <div>
       <h1>{post?.title}</h1>
       <p>{post?.content}</p>
-      {post?.imagePath && <img src={post.imagePath} alt={post.title} />}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { PostFormSchema } from "@/features/posts/schema";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { postApi } from "../api/post";
 
@@ -12,7 +11,6 @@ interface UsePostReturn {
 export const usePost = (): UsePostReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const post = async (data: PostFormSchema) => {
     try {
