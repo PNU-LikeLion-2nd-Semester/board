@@ -2,7 +2,6 @@ package org.example.be.user;
 
 import org.example.be.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class MemberService {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 			}
 			log.info("비밀번호 일치");
-			UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
+			CustomUserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
 			log.info("사용자 조회함");
 			String token = tokenProvider.createToken(userDetails.getUsername(),
 				userDetails.getAuthorities().toString());
