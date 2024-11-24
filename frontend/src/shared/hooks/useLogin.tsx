@@ -23,9 +23,11 @@ export const useLogin = (): UseLoginReturn => {
       setError(null);
 
       const response = await loginApi.login(data);
+      // test code
+      console.log(response);
 
       const user: User = {
-        id: response.user.id,
+        username: response.user.username,
       };
 
       localStorage.setItem("token", response.token);

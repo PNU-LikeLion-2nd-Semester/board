@@ -19,11 +19,10 @@ import { useLogin } from "@/shared/hooks/useLogin";
 export default function LoginForm() {
   const { login, isLoading, error } = useLogin();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: "",
+      username: "",
       password: "",
     },
   });
@@ -39,10 +38,10 @@ export default function LoginForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="id"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ID</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input placeholder="아이디" {...field} disabled={isLoading} />
                 </FormControl>

@@ -1,6 +1,6 @@
 import type { LoginRequest, LoginResponse } from "@/entities/login/types";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://a4f6-121-145-132-152.ngrok-free.app/api";
 
 export const loginApi = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {

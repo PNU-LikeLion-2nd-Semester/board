@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  username: string;
 }
 
 export interface AuthStore {
@@ -9,7 +9,7 @@ export interface AuthStore {
 }
 
 export interface LoginRequest {
-  id: string;
+  username: string;
   password: string;
 }
 
