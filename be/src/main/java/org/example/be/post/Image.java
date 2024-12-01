@@ -24,18 +24,18 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class Post {
+public class Image {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(length = 256, nullable = false)
-	private String title;
+	@Column(length = 1024)
+	private String imageName;
 
-	@Column(length = 2048, nullable = false)
-	private String content;
+	@Column(length = 1024)
+	private String imagePath;
 
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<PostImageRelation> postImageRelations = new ArrayList<>();
 }
