@@ -26,3 +26,9 @@ logging:
 jwt:
   secret: qwerasdfaseqwrewrqsdfadadsfasdfsdfasdvverbetbrbsadcsdacscasd
   expiration: 3600
+
+springdoc:
+  api-docs:
+    path: /api/v3/api-docs
+  swagger-ui:
+    path: /api/index.html
