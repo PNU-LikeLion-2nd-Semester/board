@@ -171,11 +171,11 @@ public class PostService {
 
 	private void upLikeCount(Post post) {
 		Long postLikeCount = post.getLikeCount();
-		post.setLikeCount(postLikeCount - 1);
+		post.setLikeCount(postLikeCount + 1);
 	}
 
 	private void downLikeCount(Post post) {
 		Long postLikeCount = post.getLikeCount();
-		post.setLikeCount(postLikeCount + 1);
+		post.setLikeCount(postLikeCount - 1);
 	}
 }
