@@ -64,6 +64,22 @@ public class PostController {
 		return ResponseEntity.ok("Post deleted successfully.");
 	}
 
+	@PostMapping("/like/{id}")
+	public ResponseEntity<String> likePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		postService.like(id, member);
+		return ResponseEntity.ok("Successfully like.");
+	}
+
+	@PostMapping("/unlike/{id}")
+	public ResponseEntity<String> unlikePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		postService.unlike(id, member);
+		return ResponseEntity.ok("Successfully unlike.");
+	}
+
 	/**
 	 * 기능: 댓글 작성
 	 * Method: POST
@@ -130,5 +146,25 @@ public class PostController {
 	) {
 		commentService.deleteComment(postId, commentId, member);
 		return ResponseEntity.ok("Comment was successfully deleted!");
+	}
+
+	@PostMapping("/like/{postId}/comments/{commentId}")
+	public ResponseEntity<String> likeComment(
+		@PathVariable Long postId,
+		@PathVariable("commentId") Long commentId,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		commentService.like(postId, commentId, member);
+		return ResponseEntity.ok("");
+	}
+
+	@PostMapping("/unlike/{postId}/comments/{commentId}")
+	public ResponseEntity<String> unlikeComment(
+		@PathVariable Long postId,
+		@PathVariable("commentId") Long commentId,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		commentService.unlike(postId, commentId, member);
+		return ResponseEntity.ok("");
 	}
 }

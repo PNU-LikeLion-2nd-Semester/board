@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepository postRepository;
+	private final PostLikeRepository postLikeRepository;
 
 	public void writePost(WritePostRequest request, MultipartFile imageFile, Member member) throws IOException {
 
@@ -81,8 +82,52 @@ public class PostService {
 	}
 
 	private void validateMemberOwnership(Member member, Post post) {
-		if (!post.getOwner().equals(member)) {
+		if (!isMemberOwnership(member, post)) {
 			throw new IllegalArgumentException("게시글에 대한 권한이 없습니다.");
 		}
+	}
+
+	private boolean isMemberOwnership(Member member, Post post) {
+		return post.getOwner().equals(member);
+	}
+
+	public void like(Long id, Member member) {
+		Post post = getPostById(id);
+
+		if (isMemberOwnership(member, post)) {
+			throw new IllegalArgumentException("본인은 게시글에 좋아요를 할 수 없습니다.");
+		}
+
+		PostLike like = new PostLike();
+		like.setPost(post);
+		like.setMember(member);
+		postLikeRepository.save(like);
+
+		upLikeCount(post);
+		postRepository.save(post);
+	}
+
+	public void unlike(Long id, Member member) {
+		Post post = getPostById(id);
+		PostLike postLike = getPostLike(post, member);
+		postLikeRepository.delete(postLike);
+
+		downLikeCount(post);
+		postRepository.save(post);
+	}
+
+	private PostLike getPostLike(Post post, Member member) {
+		return postLikeRepository.findByPostAndMember(post, member)
+			.orElseThrow(() -> new IllegalArgumentException("좋아요를 찾을 수 없습니다."));
+	}
+
+	private void upLikeCount(Post post) {
+		Long postLikeCount = post.getLikeCount();
+		post.setLikeCount(postLikeCount - 1);
+	}
+
+	private void downLikeCount(Post post) {
+		Long postLikeCount = post.getLikeCount();
+		post.setLikeCount(postLikeCount + 1);
 	}
 }

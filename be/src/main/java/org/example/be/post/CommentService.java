@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class CommentService {
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
+	private final CommentLikeRepository commentLikeRepository;
 
 	public void saveComment(Long postId, UpdateCommentRequest request, Member member) {
 		Post post = getPostById(postId);
@@ -89,7 +90,7 @@ public class CommentService {
 	}
 
 	private void validateMemberOwnership(Member member, Comment comment) {
-		if (!comment.getOwner().equals(member)) {
+		if (!isMemberOwnership(member, comment)) {
 			throw new IllegalArgumentException("댓글을 수정하거나 삭제할 권한이 없습니다.");
 		}
 	}
@@ -98,5 +99,46 @@ public class CommentService {
 		if (!comment.getPost().getId().equals(post.getId())) {
 			throw new IllegalArgumentException("댓글이 지정된 게시글에 속하지 않습니다.");
 		}
+	}
+
+	private boolean isMemberOwnership(Member member, Comment comment) {
+		return comment.getOwner().equals(member);
+	}
+
+	public void like(Long postId, Long commentId, Member member) {
+		Post post = getPostById(postId);
+		Comment comment = getCommentById(commentId);
+		validateCommentBelongsToPost(comment, post);
+
+		if (isMemberOwnership(member, comment)) {
+			throw new IllegalArgumentException("본인은 게시글에 좋아요를 할 수 없습니다.");
+		}
+
+		CommentLike like = new CommentLike();
+		like.setComment(comment);
+		like.setMember(member);
+		commentLikeRepository.save(like);
+
+		Long commentLikeCount = comment.getLikeCount();
+		comment.setLikeCount(commentLikeCount + 1);
+		commentRepository.save(comment);
+	}
+
+	public void unlike(Long postId, Long commentId, Member member) {
+		Post post = getPostById(postId);
+		Comment comment = getCommentById(commentId);
+		validateCommentBelongsToPost(comment, post);
+
+		CommentLike postLike = getCommentLike(comment, member);
+		commentLikeRepository.delete(postLike);
+
+		Long commentLikeCount = comment.getLikeCount();
+		comment.setLikeCount(commentLikeCount - 1);
+		commentRepository.save(comment);
+	}
+
+	private CommentLike getCommentLike(Comment comment, Member member) {
+		return commentLikeRepository.findByCommentAndMember(comment, member)
+			.orElseThrow(() -> new IllegalArgumentException("좋아요를 찾을 수 없습니다."));
 	}
 }

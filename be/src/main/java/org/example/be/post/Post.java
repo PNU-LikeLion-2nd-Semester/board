@@ -1,6 +1,7 @@
 package org.example.be.post;
 
 import org.example.be.user.Member;
+import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,4 +48,7 @@ public class Post extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "owner_id")
 	private Member owner;
+
+	@ColumnDefault("0")
+	private Long likeCount = 0L;
 }
