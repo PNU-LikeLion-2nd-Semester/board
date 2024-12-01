@@ -71,11 +71,7 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public GetPostResponse readPost(Long id) {
-		Post post = getPostById(id);
-
-		if (post == null) {
-			throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
-		}
+		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
 		List<String> imagePaths = post.getPostImageRelations().stream()
 			.map(relation -> relation.getImage().getImagePath())
