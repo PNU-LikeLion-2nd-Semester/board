@@ -1,6 +1,5 @@
 package org.example.be.post;
 
-import org.springframework.data.domain.Pageable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +10,10 @@ import org.example.be.post.dto.GetPageResponse;
 import org.example.be.post.dto.GetPostResponse;
 import org.example.be.post.dto.UpdatePostRequest;
 import org.example.be.post.dto.WritePostRequest;
+import org.example.be.user.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +28,16 @@ public class PostService {
 
 	private final PostRepository postRepository;
 	private final ImageRepository imageRepository;
+	private final PostLikeRepository postLikeRepository;
 
-	public void writePost(WritePostRequest request, List<MultipartFile> imageFile) throws IOException {
+	public void writePost(WritePostRequest request, List<MultipartFile> imageFile, Member member) throws IOException {
 
 		String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static";
 
 		Post post = Post.builder()
 			.title(request.title())
 			.content(request.content())
+			.owner(member)
 			.build();
 
 		List<PostImageRelation> relations = new ArrayList<>();
@@ -66,8 +69,9 @@ public class PostService {
 		post.setPostImageRelations(relations);
 	}
 
+	@Transactional(readOnly = true)
 	public GetPostResponse readPost(Long id) {
-		Post post = postRepository.fetchPost(id);
+		Post post = getPostById(id);
 
 		if (post == null) {
 			throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
@@ -105,9 +109,10 @@ public class PostService {
 		return new GetPageResponse(postDetails, postPage.getNumber(), postPage.getTotalPages());
 	}
 
-	public void updatePost(Long id, UpdatePostRequest request) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+	public void updatePost(Long id, UpdatePostRequest request, Member member) {
+		Post post = getPostById(id);
+
+		validateMemberOwnership(member, post);
 
 		post.setTitle(request.title());
 		post.setContent(request.content());
@@ -115,10 +120,66 @@ public class PostService {
 		postRepository.save(post);
 	}
 
-	public void removePost(Long id) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+	public void removePost(Long id, Member member) {
+		Post post = getPostById(id);
+
+		validateMemberOwnership(member, post);
 
 		postRepository.delete(post);
+	}
+
+	private Post getPostById(Long postId) {
+		return postRepository.findById(postId)
+			.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. ID: " + postId));
+	}
+
+	private void validateMemberOwnership(Member member, Post post) {
+		if (!isMemberOwnership(member, post)) {
+			throw new IllegalArgumentException("게시글에 대한 권한이 없습니다.");
+		}
+	}
+
+	private boolean isMemberOwnership(Member member, Post post) {
+		return post.getOwner().equals(member);
+	}
+
+	public void like(Long id, Member member) {
+		Post post = getPostById(id);
+
+		if (isMemberOwnership(member, post)) {
+			throw new IllegalArgumentException("본인은 게시글에 좋아요를 할 수 없습니다.");
+		}
+
+		PostLike like = new PostLike();
+		like.setPost(post);
+		like.setMember(member);
+		postLikeRepository.save(like);
+
+		upLikeCount(post);
+		postRepository.save(post);
+	}
+
+	public void unlike(Long id, Member member) {
+		Post post = getPostById(id);
+		PostLike postLike = getPostLike(post, member);
+		postLikeRepository.delete(postLike);
+
+		downLikeCount(post);
+		postRepository.save(post);
+	}
+
+	private PostLike getPostLike(Post post, Member member) {
+		return postLikeRepository.findByPostAndMember(post, member)
+			.orElseThrow(() -> new IllegalArgumentException("좋아요를 찾을 수 없습니다."));
+	}
+
+	private void upLikeCount(Post post) {
+		Long postLikeCount = post.getLikeCount();
+		post.setLikeCount(postLikeCount - 1);
+	}
+
+	private void downLikeCount(Post post) {
+		Long postLikeCount = post.getLikeCount();
+		post.setLikeCount(postLikeCount + 1);
 	}
 }
