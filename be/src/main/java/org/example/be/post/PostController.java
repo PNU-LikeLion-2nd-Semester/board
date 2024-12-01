@@ -1,7 +1,9 @@
 package org.example.be.post;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.example.be.post.dto.GetPageResponse;
 import org.example.be.post.dto.GetPostResponse;
 import org.example.be.post.dto.PostCommentsResponse;
 import org.example.be.post.dto.UpdateCommentRequest;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +37,7 @@ public class PostController {
 
 	@PostMapping
 	public ResponseEntity<String> createPost(@RequestPart(value = "text") WritePostRequest request,
-		@RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+		@RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFile,
 		@AuthenticationPrincipal(expression = "member") Member member
 	) throws IOException {
 		postService.writePost(request, imageFile, member);
@@ -44,6 +47,15 @@ public class PostController {
 	@GetMapping("/{id}")
 	public ResponseEntity<GetPostResponse> getPost(@PathVariable("id") Long id) {
 		GetPostResponse response = postService.readPost(id);
+		return ResponseEntity.ok().body(response);
+	}
+
+	@GetMapping
+	public ResponseEntity<GetPageResponse> getPage(
+		@RequestParam(required = false, defaultValue = "0", value = "page") int pageNumber,
+		@RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria,
+		@RequestParam(required = false, defaultValue = "10", value = "pageSize") int pageSize) {
+		GetPageResponse response = postService.readPage(pageNumber, pageSize, criteria);
 		return ResponseEntity.ok().body(response);
 	}
 
@@ -62,6 +74,22 @@ public class PostController {
 	) {
 		postService.removePost(id, member);
 		return ResponseEntity.ok("Post deleted successfully.");
+	}
+
+	@PostMapping("/like/{id}")
+	public ResponseEntity<String> likePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		postService.like(id, member);
+		return ResponseEntity.ok("Successfully like.");
+	}
+
+	@PostMapping("/unlike/{id}")
+	public ResponseEntity<String> unlikePost(@PathVariable("id") Long id,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		postService.unlike(id, member);
+		return ResponseEntity.ok("Successfully unlike.");
 	}
 
 	/**
@@ -130,5 +158,25 @@ public class PostController {
 	) {
 		commentService.deleteComment(postId, commentId, member);
 		return ResponseEntity.ok("Comment was successfully deleted!");
+	}
+
+	@PostMapping("/like/{postId}/comments/{commentId}")
+	public ResponseEntity<String> likeComment(
+		@PathVariable Long postId,
+		@PathVariable("commentId") Long commentId,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		commentService.like(postId, commentId, member);
+		return ResponseEntity.ok("");
+	}
+
+	@PostMapping("/unlike/{postId}/comments/{commentId}")
+	public ResponseEntity<String> unlikeComment(
+		@PathVariable Long postId,
+		@PathVariable("commentId") Long commentId,
+		@AuthenticationPrincipal(expression = "member") Member member
+	) {
+		commentService.unlike(postId, commentId, member);
+		return ResponseEntity.ok("");
 	}
 }
